@@ -37,6 +37,16 @@ describe('copy command', () => {
     expect(console.error).toHaveBeenCalledWith(expect.stringContaining('already exists'));
   });
 
+  it('overwrites destination when force is true', async () => {
+    templates.templateExists.mockReturnValue(true);
+    templates.getTemplatePath.mockReturnValue('/templates/react');
+    fs.existsSync.mockReturnValue(true);
+    fs.copy.mockResolvedValue();
+    await handler({ template: 'react', destination: 'out', force: true });
+    expect(fs.copy).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('copied to'));
+  });
+
   it('copies template successfully', async () => {
     templates.templateExists.mockReturnValue(true);
     templates.getTemplatePath.mockReturnValue('/templates/react');
