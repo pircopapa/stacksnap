@@ -48,10 +48,16 @@ export const createCommand = {
       console.log(`\n  ${chalk.bold('cd')} ${projectName}`)
       if (meta.postInstall) {
         console.log(`  ${chalk.bold(meta.postInstall)}\n`)
+      } else {
+        console.log()
       }
     } catch (err) {
       spinner.fail(chalk.red('Scaffolding failed.'))
-      console.error(chalk.red(err.message))
+      if (err.code === 'EEXIST') {
+        console.error(chalk.red(`Directory "${projectName}" already exists. Use --force to overwrite.`))
+      } else {
+        console.error(chalk.red(err.message))
+      }
       process.exit(1)
     }
   }
