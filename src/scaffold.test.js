@@ -48,6 +48,22 @@ describe('scaffoldProject', () => {
     expect(fs.copy).toHaveBeenCalledTimes(1)
     expect(fs.copy.mock.calls[0][0]).toContain('index.js')
   })
+
+  it('copies nested directory entries recursively', async () => {
+    templates.templateExists.mockReturnValue(true)
+    templates.getTemplatePath.mockReturnValue('/templates/node')
+    fs.pathExists.mockResolvedValue(false)
+    fs.ensureDir.mockResolvedValue()
+    fs.readdir.mockResolvedValue([
+      { name: 'src', isDirectory: () => true },
+      { name: 'package.json', isDirectory: () => false }
+    ])
+    fs.copy.mockResolvedValue()
+    await scaffoldProject('node', 'my-app')
+    expect(fs.copy).toHaveBeenCalledTimes(2)
+    expect(fs.copy.mock.calls[0][0]).toContain('src')
+    expect(fs.copy.mock.calls[1][0]).toContain('package.json')
+  })
 })
 
 describe('listScaffoldedFiles', () => {
