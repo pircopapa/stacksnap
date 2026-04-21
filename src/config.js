@@ -44,4 +44,14 @@ function getTemplatesDir() {
   return loadConfig().templatesDir;
 }
 
-module.exports = { loadConfig, saveConfig, getConfigPath, getTemplatesDir, CONFIG_FILE, CONFIG_DIR };
+/**
+ * Resets the config file back to default values.
+ * Returns the default config object that was written.
+ */
+function resetConfig() {
+  ensureConfigDir();
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify(defaults, null, 2));
+  return { ...defaults };
+}
+
+module.exports = { loadConfig, saveConfig, resetConfig, getConfigPath, getTemplatesDir, CONFIG_FILE, CONFIG_DIR };
