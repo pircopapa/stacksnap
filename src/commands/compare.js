@@ -40,6 +40,16 @@ export function compareTemplates(metaA, metaB) {
   return diffs;
 }
 
+/**
+ * Compares the file contents of a file shared between two templates.
+ * Returns true if the contents are identical, false otherwise.
+ */
+function sharedFileContentsMatch(templateA, templateB, relPath) {
+  const contentA = fs.readFileSync(path.join(getTemplatePath(templateA), relPath), 'utf8');
+  const contentB = fs.readFileSync(path.join(getTemplatePath(templateB), relPath), 'utf8');
+  return contentA === contentB;
+}
+
 export async function handler(argv) {
   const { templateA, templateB, files, meta } = argv;
 
@@ -68,8 +78,12 @@ export async function handler(argv) {
     const onlyA = [...filesA].filter(f => !filesB.has(f));
     const onlyB = [...filesB].filter(f => !filesA.has(f));
     const shared = [...filesA].filter(f => filesB.has(f));
+    const modifiedShared = shared.filter(f => !sharedFileContentsMatch(templateA, templateB, f));
     console.log(`\nFiles only in ${templateA}: ${onlyA.length ? onlyA.join(', ') : '(none)'}`);
     console.log(`Files only in ${templateB}: ${onlyB.length ? onlyB.join(', ') : '(none)'}`);
-    console.log(`Shared files: ${shared.length}`);
+    console.log(`Shared files: ${shared.length} (${modifiedShared.length} differ in content)`);
+    if (modifiedShared.length > 0) {
+      console.log(`  Modified: ${modifiedShared.join(', ')}`);
+    }
   }
 }
