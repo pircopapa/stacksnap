@@ -55,6 +55,10 @@ export const handler = async (argv) => {
       console.error(`Error: Template "${template}" does not exist.`);
       process.exit(1);
     }
+    // Warn if overwriting an existing alias
+    if (config.aliases[name] && config.aliases[name] !== template) {
+      console.warn(`Warning: Overwriting existing alias "${name}" (was "${config.aliases[name]}").`);
+    }
     config.aliases[name] = template;
     saveConfig(config);
     console.log(`Alias "${name}" -> "${template}" saved.`);
