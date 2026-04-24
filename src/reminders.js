@@ -3,7 +3,7 @@ const path = require('path');
 const { getConfigPath } = require('./config');
 
 function getRemindersPath() {
-  return path.join(path.dirname(getConfigPath()), 'reminders.json');
+  return path.join(getConfigPath(), 'reminders.json');
 }
 
 function loadReminders() {
@@ -16,8 +16,8 @@ function loadReminders() {
   }
 }
 
-function saveReminders(reminders) {
-  fs.writeFileSync(getRemindersPath(), JSON.stringify(reminders, null, 2));
+function saveReminders(data) {
+  fs.writeFileSync(getRemindersPath(), JSON.stringify(data, null, 2));
 }
 
 function setReminder(templateName, message, dueDate) {
