@@ -34,6 +34,17 @@ const handler = async (argv) => {
   }
 
   const templateDir = path.join(templatesDir, template);
+
+  // Check for duplicate filenames in the provided order list
+  const seen = new Set();
+  for (const filename of order) {
+    if (seen.has(filename)) {
+      console.error(`Duplicate filename in order list: "${filename}"`);
+      process.exit(1);
+    }
+    seen.add(filename);
+  }
+
   const renames = [];
 
   order.forEach((filename, idx) => {
