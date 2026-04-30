@@ -12,6 +12,12 @@ function hashFile(filePath) {
   return crypto.createHash('md5').update(content).digest('hex');
 }
 
+/**
+ * Generates a fingerprint for a template directory by hashing the names and
+ * contents of all top-level files. Directories are noted but not recursed into.
+ * @param {string} templatePath - Absolute path to the template directory.
+ * @returns {string} MD5 hex digest representing the template's content.
+ */
 function getTemplateFingerprint(templatePath) {
   const files = fs.readdirSync(templatePath).sort();
   const hashes = files.map((f) => {
